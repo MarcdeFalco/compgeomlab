@@ -113,7 +113,8 @@ module Ray = struct
     let intersect_segment r a b =
         let rab = emit a b in
         let t, tab = solve_intersect_rays r rab in
-        if tab >= 0. && tab <= 1.
+        (* rab.dir est unitaire : tab varie de 0 à |ab| sur le segment *)
+        if tab >= 0. && tab <= norm (b -$ a)
         then Some t
         else None
 
@@ -178,9 +179,9 @@ module AABB = struct
         let x_min = 
             List.fold_left min (List.hd l_x) l_x in
         let y_max = 
-            List.fold_left max (List.hd l_x) l_x in
+            List.fold_left max (List.hd l_y) l_y in
         let y_min = 
-            List.fold_left min (List.hd l_x) l_x in
+            List.fold_left min (List.hd l_y) l_y in
         { ul = Point.make x_min y_min;
           dr = Point.make x_max y_max }
 

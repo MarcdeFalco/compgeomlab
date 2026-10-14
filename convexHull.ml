@@ -10,13 +10,13 @@ let compute points =
             | [] -> failwith "empty"
             | [p] -> p
             | t::q -> let lq = leftmost q in
-                if lq.x < t.x
+                if lq.x < t.x || (lq.x = t.x && lq.y < t.y)
                 then lq else t
         in
         let next p =
             let rec search l =
                 match l with
-                | [] -> failwith "empty"
+                | [] -> p (* tous les points sont égaux à p *)
                 | t::q ->
                     if t = p
                     then search q
@@ -29,6 +29,8 @@ let compute points =
                     aux q l'
                 | r::l' ->
                     if Triangle.is_direct (Triangle.make p q r)
+                    || (not (Triangle.is_direct (Triangle.make p r q))
+                        && norm (r -$ p) > norm (q -$ p))
                     then aux r l'
                     else aux q l'
             in aux (search points) points
